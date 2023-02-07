@@ -10,9 +10,14 @@ const app = fastify();
 const bot = new chatGPT(process.env.CHATGPT_SESSION_TOKEN);
 
 // Wait for chatbot to be ready
-bot.waitForReady().then(() => {
-  console.log("Chatbot is ready!");
-});
+bot
+  .waitForReady()
+  .then(() => {
+    console.log("Chatbot is ready!");
+  })
+  .catch((err) => {
+    console.error(err);
+  });
 
 // API route for asking the chatbot a question
 app.post("/ask", async (req, res) => {

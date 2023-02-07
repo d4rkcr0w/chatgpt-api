@@ -11,17 +11,17 @@ const api = new ChatGPTAPI({
 const app = fastify();
 
 app.post("/ask", async (req, res) => {
-  const { message, conversationId, parentMessageId } = req.body;
+  const { text, conversationId, parentMessageId } = req.body;
 
   // Use conversation_id if provided, otherwise use default conversation
   let response;
   if (conversationId && parentMessageId) {
-    response = await api.sendMessage(message, {
+    response = await api.sendMessage(text, {
       conversationId,
       parentMessageId,
     });
   } else {
-    response = await api.sendMessage(message);
+    response = await api.sendMessage(text);
   }
 
   res.send({

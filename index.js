@@ -1,52 +1,36 @@
-import fastify from "fastify";
-import chatGPT from "chatgpt-io";
 import * as dotenv from "dotenv";
+import fastify from "fastify";
+import { ChatGPTAPI } from "chatgpt";
 
 dotenv.config();
 
+const api = new ChatGPTAPI({
+  apiKey: process.env.OPENAI_API_KEY,
+});
+
 const app = fastify();
 
-// Initialize chatbot with a session token
-const bot = new chatGPT(process.env.CHATGPT_SESSION_TOKEN);
-
-// Wait for chatbot to be ready
-bot
-  .waitForReady()
-  .then(() => {
-    console.log("Chatbot is ready!");
-  })
-  .catch((err) => {
-    console.error(err);
-  });
-
-// API route for asking the chatbot a question
 app.post("/ask", async (req, res) => {
-  // Get question and conversation_id from body parameters
-  const { message, conversation_id } = req.body;
-
-  // Return an error if the chatbot is not yet ready
-  if (!bot.ready) {
-    res.status(503).send({
-      error: "Chatbot is not ready yet",
-    });
-    return;
-  }
+  const { message, conversationId, parentMessageId } = req.body;
 
   // Use conversation_id if provided, otherwise use default conversation
   let response;
-  if (conversation_id) {
-    response = await bot.ask(message, conversation_id);
+  if (conversationId && parentMessageId) {
+    response = await api.sendMessage(message, {
+      conversationId,
+      parentMessageId,
+    });
   } else {
-    response = await bot.ask(message);
+    response = await api.sendMessage(message);
   }
 
-  // Send response as JSON
   res.send({
     response,
   });
 });
 
 const port = process.env.PORT || 3000;
+
 app.listen({ host: "0.0.0.0", port }, (err) => {
   if (err) {
     console.error(err);

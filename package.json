@@ -25,9 +25,12 @@
   },
   "homepage": "https://github.com/waylaidwanderer/chatgpt-io-api#readme",
   "dependencies": {
-    "chatgpt-io": "^1.0.4",
+    "chatgpt": "^4.1.2",
     "dotenv": "^16.0.3",
     "fastify": "^4.11.0"
   },
-  "type": "module"
+  "type": "module",
+  "volta": {
+    "node": "18.14.0"
+  }
 }

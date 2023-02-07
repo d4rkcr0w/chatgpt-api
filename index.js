@@ -14,19 +14,17 @@ app.post("/ask", async (req, res) => {
   const { text, conversationId, parentMessageId } = req.body;
 
   // Use conversation_id if provided, otherwise use default conversation
-  let response;
+  let result;
   if (conversationId && parentMessageId) {
-    response = await api.sendMessage(text, {
+    result = await api.sendMessage(text, {
       conversationId,
       parentMessageId,
     });
   } else {
-    response = await api.sendMessage(text);
+    result = await api.sendMessage(text);
   }
 
-  res.send({
-    response,
-  });
+  res.send(result);
 });
 
 const port = process.env.PORT || 3000;
